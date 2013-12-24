@@ -19,8 +19,14 @@ my %WriteMakefileArgs = (
   "EXE_FILES" => [],
   "LICENSE" => "perl",
   "NAME" => "Test::PathInRoot",
-  "PREREQ_PM" => {},
-  "TEST_REQUIRES" => {},
+  "PREREQ_PM" => {
+    "Parse::EDID" => 0,
+    "strict" => 0,
+    "warnings" => 0
+  },
+  "TEST_REQUIRES" => {
+    "Test::More" => 0
+  },
   "VERSION" => "0.001",
   "test" => {
     "TESTS" => "t/*.t"
@@ -28,7 +34,12 @@ my %WriteMakefileArgs = (
 );
 
 
-my %FallbackPrereqs = ();
+my %FallbackPrereqs = (
+  "Parse::EDID" => 0,
+  "Test::More" => 0,
+  "strict" => 0,
+  "warnings" => 0
+);
 
 
 unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
