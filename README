@@ -1,0 +1,66 @@
+*
+dzil new Test::PathInRoot
+
+*
+cd Test-PathInRoot
+
+*
+dist.ini 에 다음 항목 추가:
+
+[CPANFile]
+[PathInRoot]
+copy = Makefile.PL
+copy = cpanfile
+
+*
+lib/Test/PathInRoot.pm 파일에 다음 내용 추가
+
+# ABSTRACT: Test
+# 현재 설치되어 있지 않은 모듈
+use Parse::EDID;
+
+*
+t/00-compile.t 를 만들고 다음 테스트 추가
+
+use Test::More;
+
+use_ok 'Test::PathInRoot';
+
+done_testing;
+
+*
+이 시점에서 git init , git commit (사실 처음에 했어야 했는데 깜박)
+
+*
+dzil build
+    이제 작업 디렉토리에 Makefile.PL 과 cpanfile 이 생성되었는데
+    일단 이 시점에 Parse::EDID 에 관한 것은 어디에도 없군요.
+
+그래서
+cpanm Test-PathInRoot-0.001.tar.gz 이것은 실패.
+
+*
+cpanfile 에 의존성 추가
+
+requires 'Parse::EDID';
+
+*
+다시 dzil build
+    했더니…
+    오히려 root 에 있는 cpanfile 에서 require 구문이 사라져 버렸습니다…
+
+*
+결국 어딘가 내가 명시적으로 의존성을 적어줘야겠구나 싶어서
+dist.ini 에 추가:
+
+[AutoPrereqs]
+
+*
+dzil build
+
+    이제 Makefile.PL 과 cpanfile 에 자동으로 Parse::EDID 가 언급됨
+
+*
+cpanm .
+이것만으로 알아서 의존성 찾아가며 설치 잘 됨 :)
+    이것이 제가 원하던 결과.
